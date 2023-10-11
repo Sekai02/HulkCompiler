@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "HULKEngine/1.0.0": {
+        "dependencies": {
+          "HULKLibrary": "1.0.0"
+        },
+        "runtime": {
+          "HULKEngine.dll": {}
+        }
+      },
+      "HULKLibrary/1.0.0": {
+        "runtime": {
+          "HULKLibrary.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "HULKEngine/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HULKLibrary/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

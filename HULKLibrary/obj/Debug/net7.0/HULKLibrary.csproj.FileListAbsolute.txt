@@ -1,0 +1,12 @@
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/bin/Debug/net7.0/HULKLibrary.deps.json
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/bin/Debug/net7.0/HULKLibrary.dll
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/bin/Debug/net7.0/HULKLibrary.pdb
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/HULKLibrary.csproj.AssemblyReference.cache
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/HULKLibrary.GeneratedMSBuildEditorConfig.editorconfig
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/HULKLibrary.AssemblyInfoInputs.cache
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/HULKLibrary.AssemblyInfo.cs
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/HULKLibrary.csproj.CoreCompileInputs.cache
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/HULKLibrary.dll
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/refint/HULKLibrary.dll
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/HULKLibrary.pdb
+/home/sekai02/Documents/School/1ro/2do semestre/Programacion/hulk/HULKLibrary/obj/Debug/net7.0/ref/HULKLibrary.dll
