@@ -108,7 +108,7 @@ public abstract class Expression
                     {
                         if ((double)right == 0)
                             throw new Error(ErrorType.SEMANTIC_ERROR, "Modulo by zero", oper);
-                        return (double)((int)left % (int)right);
+                        return (double)(Convert.ToInt64((double)left) % Convert.ToInt64((double)right));
                     }
                     throw new Error(ErrorType.SEMANTIC_ERROR, "Operands must be numbers", oper);
                 case TokenType.CARET:

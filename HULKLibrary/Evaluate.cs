@@ -35,7 +35,7 @@ public class Evaluate
             case Expression.Variable:
                 Expression.Variable variable = (Expression.Variable)expr;
                 if (!value.ContainsKey(variable.name))
-                    throw new Error(ErrorType.SEMANTIC_ERROR, variable.name + " is no defined.");
+                    throw new Error(ErrorType.SEMANTIC_ERROR, variable.name + " is no defined.", Scanner.line);
                 return value[variable.name];
             case Expression.Binary:
                 Expression.Binary binary = (Expression.Binary)expr;

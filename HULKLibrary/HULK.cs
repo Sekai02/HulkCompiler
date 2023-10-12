@@ -20,7 +20,7 @@ public class HULK
         Scanner.line = 0;
         while (true)
         {
-            Console.Write("line:{0} > ", Scanner.line + 1);
+            Console.Write("[{0}] > ", Scanner.line + 1);
             string line = Console.ReadLine();
             if (line == null) break;
             Run(line);
