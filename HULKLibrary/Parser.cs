@@ -50,7 +50,7 @@ public class Parser
         if (match(type))
             return advance();
 
-        throw new Error(ErrorType.SYNTAX_ERROR, "Expect '" + lexeme, getToken());
+        throw new Error(ErrorType.SYNTAX_ERROR, "Expect '" + lexeme + "'", getToken());
     }
 
     public Expression parse()

@@ -8,6 +8,8 @@ namespace HULKEngine
     {
         static void Main(string[] args)
         {
+            Functions.init();
+
             if (args.Length > 1)
             {
                 Console.WriteLine("Usage: HULK [script]");
