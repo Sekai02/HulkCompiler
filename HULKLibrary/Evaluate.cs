@@ -47,7 +47,7 @@ public class Evaluate
                 Expression.Call call = (Expression.Call)expr;
                 return call.eval(value);
             case Expression.Function:
-                return "Successful function declaration.";
+                return "Function declared.";
             case Expression.IfStatement:
                 Expression.IfStatement ifstmt = (Expression.IfStatement)expr;
                 return ifstmt.eval(value);

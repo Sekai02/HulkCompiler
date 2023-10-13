@@ -121,6 +121,12 @@ public class Scanner
 
             switch (type)
             {
+                case TokenType.FALSE:
+                    literal = false;
+                    break;
+                case TokenType.TRUE:
+                    literal = true;
+                    break;
                 case TokenType.EULER:
                     literal = Math.E;
                     break;

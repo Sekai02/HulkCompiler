@@ -42,6 +42,6 @@ public class HULK
 
         Evaluate evaluate = new Evaluate(Ast);
         object output = evaluate.run();
-        if (output != null) Console.WriteLine(output);
+        if (output != null) Console.WriteLine(output is bool ? output.ToString().ToLower() : output);
     }
 }
