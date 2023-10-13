@@ -116,6 +116,11 @@ public class Parser
             error.Report();
             return null!;
         }
+        catch (Exception excp)
+        {
+            Console.WriteLine(excp.Message);
+            return null!;
+        }
     }
 
     private Expression expression()
