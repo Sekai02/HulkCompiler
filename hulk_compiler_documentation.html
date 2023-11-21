@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>HULK Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+
+        header {
+            background-color: #161b22;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            color: rgb(9, 255, 0);
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .nav-buttons {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .nav-buttons li {
+            margin-right: 10px;
+        }
+
+        .nav-buttons li a {
+            color: #c9d1d9;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+        }
+
+        pre {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 14px;
+            color: #3f6b9e;
+        }
+
+        h2 {
+            color: #3a9732;
+        }
+
+        h5 {
+            color: #3a9732;
+        }
+
+        p {
+            color: #b4d3da;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 576px) {
+            .logo {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 16px;
+            }
+
+            .nav-buttons li {
+                margin-right: 5px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .logo {
+                font-size: 16px;
+                margin-right: 5px;
+            }
+
+            .nav-buttons li {
+                margin-right: 5px;
+            }
+
+            section {
+                padding: 10px;
+            }
+
+            pre {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo">H.U.L.K Compiler</div>
+        <ul class="nav-buttons">
+            <li><a href="#section1">¿Cómo abrir el proyecto?</a></li>
+            <li><a href="#section2">Funcionamiento general</a></li>
+            <li><a href="#section3">Estructura del proyecto</a></li>
+        </ul>
+    </header>
+
+    <div style="display: flex; justify-content: center; align-items: center; height: 10%;">
+        <img src="hulkimg.png"
+            alt="Imagen de Hulk (Debes estar conectado para verla)" style="max-width: 15%; max-height: 15%;">
+    </div>
+
+    <section id="section1">
+        <div class="container">
+            <h2>¿Cómo abrir el proyecto?</h2>
+            <p>Ir a la carpeta raíz del proyecto y escribir en la consola el siguiente comando:
+                <code>run --project HULKEngine/HULKEngine.csproj</code>
+
+                Esto abrirá H.U.L.K en modo RunPrompt donde podrá introducir línea tras línea como
+                si estuviera usando Python.
+            </p>
+            <h5>Ejecutando desde un archivo</h5>
+            <p>
+                Siga las mismas instrucciones que en el paso anterior pero seguido del comando escriba
+                el nombre del archivo a ejecutar:
+                <code>run --project HULKEngine/HULKEngine.csproj test.txt</code>
+            </p>
+        </div>
+    </section>
+
+    <section id="section2">
+        <div class="container">
+            <h2>Funcionamiento general</h2>
+            <p>El intérprete de H.U.L.K provisto recibe un código a ejecutar, ya sea de un archivo
+                o leído línea a línea.
+
+                Todo el proceso ocurre por fases que dependen cada una de la anterior, este diseño permite trabajar
+                cada parte del programa por independiente y hacer modificaciones en partes del programa sin afectar la
+                una a otra.
+
+                Luego este código es Tokenizado por una clase llamada <code>Scanner.cs</code>, la cual
+                es un analizador léxico que construye una lista de Tokens a ser procesados. Estos tokens son unidades
+                más pequeñas con un significado
+                propio. Un token puede ser una palabra clave, un identificador, un operador, un número, etc.
+
+                En la fase posterior ocurre el Análisis Sintáctico o Parseo, del cual se encarga la clase
+                <code>Parser.cs</code>
+                Esta se encarga de analizar la estructura gramatical del código fuente y construir una representación en
+                forma de árbol
+                llamada Árbol de Sintaxis Abstracta (AST).
+                En la presente implementación se usó análisis sintáctico descendente recursivo. A través de una
+                gramática bien definida.
+
+                Una vez se ha construido el AST, se puede evaluar y ejecutar el código fuente, este proceso ocurre en la
+                clase <code>Evaluate.cs</code> la
+                cual es un intérprete que recibe un contexto y va recorriendo el AST ejecutando las acciones
+                correspondientes de manera recursiva.
+
+                Cualquier error detectado durante el proceso es atrapado como una excepción e informado, causando
+                generalmente que el programa se detenga.
+            </p>
+        </div>
+    </section>
+
+    <section id="section3">
+        <div class="container">
+            <h2>Estructura del proyecto</h2>
+            <p>
+
+            <ul>
+                <li>
+                    HULKLibrary
+                    <ol>
+                        <li><code>DataType.cs</code>: Esta clase define los tipos de datos utilizados en el lenguaje
+                            "HULK".
+                        </li>
+                        <li><code>Error.cs</code>: Esta clase representa un objeto de error en el compilador "HULK".
+                        </li>
+                        <li><code>Evaluate.cs</code>: Esta clase se encarga de realizar la evaluación de expresiones en
+                            el
+                            lenguaje "HULK".</li>
+                        <li><code>Expression.cs</code>: Esta clase representa una expresión en el lenguaje "HULK".</li>
+                        <li><code>Functions.cs</code>: Esta clase define las funciones integradas en el lenguaje "HULK".
+                        </li>
+                        <li><code>HULK.cs</code>: Esta clase es la clase principal del compilador "HULK".</li>
+                        <li><code>HULKLibrary.csproj</code>: Este archivo es el archivo de proyecto de la biblioteca
+                            "HULKLibrary".</li>
+                        <li><code>Parser.cs</code>: Esta clase se encarga del análisis sintáctico del código fuente en
+                            el
+                            compilador "HULK".</li>
+                        <li><code>Scanner.cs</code>: Esta clase realiza el análisis léxico en el compilador "HULK".</li>
+                        <li><code>Token.cs</code>: Esta clase representa un token en el compilador "HULK".</li>
+                        <li><code>TokenType.cs</code>: Esta clase define las enumeraciones para los diferentes tipos de
+                            tokens
+                            utilizados en el compilador "HULK".</li>
+                        <li><code>Utils.cs</code>: Esta clase contiene métodos de utilidad utilizados en el compilador
+                            "HULK".
+                        </li>
+                    </ol>
+                </li>
+                <li>
+                    HULKEngine
+                    <ol>
+                        <li><code>Program.cs</code>: Esta clase maneja la lógica y la interacción del usuario con la
+                            consola
+                            de "HULK".
+                        </li>
+                    </ol>
+                </li>
+            </ul>
+
+            </p>
+        </div>
+    </section>
+
+    <footer style="background-color: #0d1117; color: #c9d1d9; padding: 20px; text-align: center;">
+        <a href="https://github.com/Sekai02" target="_blank">
+            <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub Logo"
+                height="30" style="vertical-align: middle;">
+        </a>
+        <span style="margin-left: 10px;">&copy; 2023 GitHub</span>
+        <br>
+        <a href="https://github.com/Sekai02/HulkCompiler" target="_blank"
+            style="color: #c9d1d9; text-decoration: none;">
+            Repositorio de HulkCompiler
+        </a>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.6.0/js/bootstrap.min.js"></script>
+</body>
+
+</html>

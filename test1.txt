@@ -1,0 +1,25 @@
+function f(x) => 5;
+f(3);
+
+function g(x,y) => print("waos");
+g(5);
+g(,4);
+g(5,4);
+
+let x=5 in print(x);
+let x=5 in let y=7 in print(x+y);
+
+print("esto imprime");
+
+x+7;
+7+7;
+4+5/2;
+4%2
+
+7^10
+
+false @ 7
+
+if (7==8) "a"+2 else 3;
+if(7==7) print("este es el body del if") else 5;
+

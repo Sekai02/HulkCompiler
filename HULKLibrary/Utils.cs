@@ -12,7 +12,7 @@ public static class Utils
     /// <summary>
     /// Maximum number of calls admited by stack
     /// </summary>
-    public readonly static int stackLimit = 10000;
+    public readonly static int stackLimit = 2097152;    ///2^21
 
     /// <summary>
     /// Checks if a value is number(double) or not

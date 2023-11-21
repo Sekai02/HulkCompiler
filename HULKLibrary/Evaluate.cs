@@ -48,7 +48,8 @@ public class Evaluate
     {
         Utils.callCount++;
         if (Utils.callCount > Utils.stackLimit)
-            throw new StackOverflowException();
+            throw new Error(ErrorType.SEMANTIC_ERROR, "Stack Overflow",HULK.Line);
+        //throw new StackOverflowException();
 
         switch (expr)
         {
@@ -57,7 +58,7 @@ public class Evaluate
             case Expression.Variable:
                 Expression.Variable variable = (Expression.Variable)expr;
                 if (!value.ContainsKey(variable.name))
-                    throw new Error(ErrorType.SEMANTIC_ERROR, variable.name + " is no defined.", Scanner.line);
+                    throw new Error(ErrorType.SEMANTIC_ERROR, variable.name + " is no defined.", HULK.Line);
                 return value[variable.name];
             case Expression.Binary:
                 Expression.Binary binary = (Expression.Binary)expr;
@@ -72,7 +73,7 @@ public class Evaluate
                 return "Function declared.";
             case Expression.IfStatement:
                 Expression.IfStatement ifstmt = (Expression.IfStatement)expr;
-                ifstmt.checkValue(value);
+                //ifstmt.checkValue(value);
                 return ifstmt.Eval(value);
             case Expression.LetStatement:
                 Expression.LetStatement let = (Expression.LetStatement)expr;

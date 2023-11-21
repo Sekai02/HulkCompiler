@@ -279,41 +279,41 @@ public abstract class Expression
             {
                 case "print":
                     if (args.Count != 1)
-                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'print' receives 1 argument(s), but " + context.Count + " were given", Scanner.line);
+                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'print' receives 1 argument(s), but " + context.Count + " were given", HULK.Line);
                     return args[0];
                 case "sqrt":
                     if (args.Count != 1)
-                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'sqrt' receives 1 argument(s), but " + context.Count + "were given", Scanner.line);
+                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'sqrt' receives 1 argument(s), but " + context.Count + "were given", HULK.Line);
                     if (Utils.OperandIsNumber(args[0]))
                         return Math.Sqrt((double)args[0]);
-                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", Scanner.line);
+                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", HULK.Line);
                 case "sin":
                     if (args.Count != 1)
-                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'sin' receives 1 argument(s), but " + context.Count + "were given", Scanner.line);
+                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'sin' receives 1 argument(s), but " + context.Count + "were given", HULK.Line);
                     if (Utils.OperandIsNumber(args[0]))
                         return Math.Sin((double)args[0]);
-                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", Scanner.line);
+                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", HULK.Line);
                 case "cos":
                     if (args.Count != 1)
-                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'cos' receives 1 argument(s), but " + context.Count + "were given", Scanner.line);
+                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'cos' receives 1 argument(s), but " + context.Count + "were given", HULK.Line);
                     if (Utils.OperandIsNumber(args[0]))
                         return Math.Cos((double)args[0]);
-                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", Scanner.line);
+                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", HULK.Line);
                 case "exp":
                     if (args.Count != 1)
-                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'exp' receives 1 argument(s), but " + context.Count + "were given", Scanner.line);
+                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'exp' receives 1 argument(s), but " + context.Count + "were given", HULK.Line);
                     if (Utils.OperandIsNumber(args[0]))
                         return Math.Exp((double)args[0]);
-                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", Scanner.line);
+                    throw new Error(ErrorType.SEMANTIC_ERROR, "A number was expected, instead a " + args[0].GetType() + " was given", HULK.Line);
                 case "log":
                     if (args.Count != 2)
-                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'log' receives 1 argument(s), but " + context.Count + "were given", Scanner.line);
+                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'log' receives 1 argument(s), but " + context.Count + "were given", HULK.Line);
                     if (Utils.OperandsAreNumbers(args[0], args[1]))
                         return Math.Log((double)args[0], (double)args[1]);
-                    throw new Error(ErrorType.SEMANTIC_ERROR, "Numbers were expected, instead " + args[0].GetType() + " and " + args[1].GetType() + " were given", Scanner.line);
+                    throw new Error(ErrorType.SEMANTIC_ERROR, "Numbers were expected, instead " + args[0].GetType() + " and " + args[1].GetType() + " were given", HULK.Line);
                 case "rand":
                     if (args.Count != 0)
-                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'rand' takes 0 arguments", Scanner.line);
+                        throw new Error(ErrorType.SEMANTIC_ERROR, "Function 'rand' takes 0 arguments", HULK.Line);
                     Random rnd = new Random();
                     return rnd.NextDouble();
                 default:
@@ -329,7 +329,7 @@ public abstract class Expression
 
                         return Evaluate.GetValue(function.body, function.value);
                     }
-                    throw new Error(ErrorType.SEMANTIC_ERROR, "Function " + identifier + " receives " + function.arguments.Count + " but " + args.Count + " were given", Scanner.line);
+                    throw new Error(ErrorType.SEMANTIC_ERROR, "Function " + identifier + " receives " + function.arguments.Count + " but " + args.Count + " were given", HULK.Line);
             }
         }
 
@@ -443,11 +443,11 @@ public abstract class Expression
         /// CheckValue helper for detecting errors in both branches of if-else
         /// </summary>
         /// <param name="context">Context for evaluating</param>
-        public void checkValue(Dictionary<string, object> context)
+        /*public void checkValue(Dictionary<string, object> context)
         {
             object ifBdy = Evaluate.GetValue(ifBody, context);
             object elseBdy = Evaluate.GetValue(elseBody, context);
-        }
+        }*/
 
         /// <summary>
         /// Method for evaluating If-Else expression

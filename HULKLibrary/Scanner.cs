@@ -25,10 +25,6 @@ public class Scanner
     /// current position in source
     /// </summary>
     private int current = 0;
-    /// <summary>
-    /// current line in code
-    /// </summary>
-    public static int line = 0;
 
     /// <summary>
     /// A Dictionary containing all keywords of the language
@@ -52,7 +48,7 @@ public class Scanner
     /// <param name="source">string code to be Scanned(Tokenized)</param>
     public Scanner(string source)
     {
-        line++;
+        //line++;
         this.source = source;
     }
 
@@ -68,7 +64,7 @@ public class Scanner
             ScanToken();
         }
 
-        tokens.Add(new Token(TokenType.EOF, "", null!, line));
+        tokens.Add(new Token(TokenType.EOF, "", null!, HULK.Line));
         return tokens;
     }
 
@@ -116,7 +112,7 @@ public class Scanner
                 break;
 
             case '\n':
-                line++;
+                HULK.Line++;
                 break;
 
             case '"':
@@ -134,7 +130,7 @@ public class Scanner
                 }
                 else
                 {
-                    Error err = new Error(ErrorType.LEXICAL_ERROR, "Unexpected character.", line);
+                    Error err = new Error(ErrorType.LEXICAL_ERROR, "Unexpected character.", HULK.Line);
                     err.Report();
                 }
                 break;
@@ -226,13 +222,13 @@ public class Scanner
     {
         while (Peek() != '"' && !IsAtEnd())
         {
-            if (Peek() == '\n') line++;
+            if (Peek() == '\n') HULK.Line++;
             Advance();
         }
 
         if (IsAtEnd())
         {
-            Error err = new Error(ErrorType.LEXICAL_ERROR, "Unterminated string.", line);
+            Error err = new Error(ErrorType.LEXICAL_ERROR, "Unterminated string.", HULK.Line);
             err.Report();
             return;
         }
@@ -335,6 +331,6 @@ public class Scanner
     {
         //string text = source.Substring(start, current);
         string text = Substring(source, start, current);
-        tokens.Add(new Token(type, text, literal, line));
+        tokens.Add(new Token(type, text, literal, HULK.Line));
     }
 }
