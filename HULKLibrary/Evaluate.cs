@@ -1,28 +1,50 @@
 namespace HULKLibrary;
 
+/// <summary>
+/// Interpreter class
+/// </summary>
 public class Evaluate
 {
+    /// <summary>
+    /// Abstract Syntax Tree
+    /// </summary>
     private readonly Expression Ast;
 
+    /// <summary>
+    /// Evaluate(Intepreter) constructor
+    /// </summary>
+    /// <param name="Ast">Takes the root of the parsed AST</param>
     public Evaluate(Expression Ast)
     {
         this.Ast = Ast;
     }
 
-    public object run()
+    /// <summary>
+    /// Runs the code interpreting the parsed AST
+    /// </summary>
+    /// <returns>The returned value of all the proccess</returns>
+    public object Run()
     {
         try
         {
-            return getValue(Ast, new Dictionary<string, object>());
+            return GetValue(Ast, new Dictionary<string, object>());
         }
         catch (Error error)
         {
             error.Report();
-            return null;
+            return null!;
         }
     }
 
-    public static object getValue(Expression expr, Dictionary<string, object> value)
+    /// <summary>
+    /// Evaluates a given expression under a context
+    /// </summary>
+    /// <param name="expr">Expression to evaluate</param>
+    /// <param name="value">Context to evaluate the expression</param>
+    /// <returns>The result of evaluating the expression</returns>
+    /// <exception cref="StackOverflowException"></exception>
+    /// <exception cref="Error"></exception>
+    public static object GetValue(Expression expr, Dictionary<string, object> value)
     {
         Utils.callCount++;
         if (Utils.callCount > Utils.stackLimit)
@@ -39,23 +61,24 @@ public class Evaluate
                 return value[variable.name];
             case Expression.Binary:
                 Expression.Binary binary = (Expression.Binary)expr;
-                return binary.eval(getValue(binary.left, value), getValue(binary.right, value));
+                return binary.Eval(GetValue(binary.left, value), GetValue(binary.right, value));
             case Expression.Unary:
                 Expression.Unary unary = (Expression.Unary)expr;
-                return unary.eval(getValue(unary.right, value));
+                return unary.Eval(GetValue(unary.right, value));
             case Expression.Call:
                 Expression.Call call = (Expression.Call)expr;
-                return call.eval(value);
+                return call.Eval(value);
             case Expression.Function:
                 return "Function declared.";
             case Expression.IfStatement:
                 Expression.IfStatement ifstmt = (Expression.IfStatement)expr;
-                return ifstmt.eval(value);
+                ifstmt.checkValue(value);
+                return ifstmt.Eval(value);
             case Expression.LetStatement:
                 Expression.LetStatement let = (Expression.LetStatement)expr;
-                return let.eval(value);
+                return let.Eval(value);
             default:
-                return null;
+                return null!;
         }
     }
 }

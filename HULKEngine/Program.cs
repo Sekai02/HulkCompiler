@@ -4,11 +4,14 @@ using HULKLibrary;
 
 namespace HULKEngine
 {
+    /// <summary>
+    /// Class to handle the logic and input of the program
+    /// </summary>
     public class Program
     {
         static void Main(string[] args)
         {
-            Functions.init();
+            Functions.Init();
 
             if (args.Length > 1)
             {

@@ -1,117 +1,162 @@
 namespace HULKLibrary;
 
+/// <summary>
+/// Parser
+/// </summary>
 public class Parser
 {
+    /// <summary>
+    /// Token List
+    /// </summary>
     private readonly List<Token> tokens;
+    /// <summary>
+    /// Current pos
+    /// </summary>
     int current = 0;
 
+    /// <summary>
+    /// Parser constructor
+    /// </summary>
+    /// <param name="tokens">Token list to consume and build the AST</param>
     public Parser(List<Token> tokens)
     {
         this.tokens = tokens;
     }
 
-    private Token getToken()
+    /// <summary>
+    /// Get Current token of the list
+    /// </summary>
+    /// <returns>The current token of the list</returns>
+    private Token GetToken()
     {
         return tokens[current];
     }
 
-    private new TokenType getType()
+    /// <summary>
+    /// Gets the type of the current token of the list
+    /// </summary>
+    /// <returns>The type of the current token</returns>
+    private new TokenType GetType()
     {
         return tokens[current].type;
     }
 
-    private string getLexeme()
+    /// <summary>
+    /// Gets the lexeme of the current token of the list
+    /// </summary>
+    /// <returns></returns>
+    private string GetLexeme()
     {
         return tokens[current].lexeme;
     }
 
-    private bool match(params TokenType[] tokentypes)
+    /// <summary>
+    /// Checks if the current Token matches any of the types
+    /// </summary>
+    /// <param name="tokentypes">Types to match</param>
+    /// <returns>True if matches, False otherwise</returns>
+    private bool Match(params TokenType[] tokentypes)
     {
-        if (getType() == TokenType.EOF)
+        if (GetType() == TokenType.EOF)
             return false;
 
         foreach (TokenType type in tokentypes)
-            if (getType() == type)
+            if (GetType() == type)
                 return true;
 
         return false;
     }
 
-    private int advance()
+    /// <summary>
+    /// Advances to the next token and returns the current position
+    /// </summary>
+    /// <returns>Current pos</returns>
+    private int Advance()
     {
-        if (getType() != TokenType.EOF)
+        if (GetType() != TokenType.EOF)
             current++;
 
         return current - 1;
     }
 
-    private int consume(TokenType type, string lexeme)
+    /// <summary>
+    /// Consumes the current token if it matches the current type
+    /// </summary>
+    /// <param name="type">Type to match</param>
+    /// <param name="lexeme">Lexeme</param>
+    /// <returns>The current pos</returns>
+    /// <exception cref="Error"></exception>
+    private int Consume(TokenType type, string lexeme)
     {
-        if (match(type))
-            return advance();
+        if (Match(type))
+            return Advance();
 
-        throw new Error(ErrorType.SYNTAX_ERROR, "Expect '" + lexeme + "'", getToken());
+        throw new Error(ErrorType.SYNTAX_ERROR, "Expect '" + lexeme + "'", GetToken());
     }
 
-    public Expression parse()
+    /// <summary>
+    /// Parse method
+    /// </summary>
+    /// <returns>Root of the AST</returns>
+    public Expression Parse()
     {
         string delete = "";
         try
         {
-            if (match(TokenType.FUNCTION))
+            if (Match(TokenType.FUNCTION))
             {
-                advance();
+                Advance();
                 string identifier = "";
 
-                if (match(TokenType.IDENTIFIER))
-                    identifier = getLexeme();
+                if (Match(TokenType.IDENTIFIER))
+                    identifier = GetLexeme();
 
-                consume(TokenType.IDENTIFIER, "a name");
+                Consume(TokenType.IDENTIFIER, "a name");
 
-                consume(TokenType.LEFT_PAREN, "(");
+                Consume(TokenType.LEFT_PAREN, "(");
 
                 List<string> arguments = new List<string>();
-                while (match(TokenType.IDENTIFIER))
+                while (Match(TokenType.IDENTIFIER))
                 {
-                    arguments.Add(getLexeme());
-                    advance();
-                    if (match(TokenType.COMMA))
-                        advance();
+                    arguments.Add(GetLexeme());
+                    Advance();
+                    if (Match(TokenType.COMMA))
+                        Advance();
                 }
 
-                consume(TokenType.RIGHT_PAREN, ")");
+                Consume(TokenType.RIGHT_PAREN, ")");
 
-                consume(TokenType.INLINE_FUNCTION, "=>");
+                Consume(TokenType.INLINE_FUNCTION, "=>");
 
-                if (Functions.contains(identifier))
+                if (Functions.Contains(identifier))
                 {
                     throw new Exception("Functions cannot be redefined.");
                 }
-                Functions.add(identifier);
+                Functions.Add(identifier);
                 delete = identifier;
 
-                Expression body = expression();
+                Expression body = ParseExpression();
 
-                consume(TokenType.SEMICOLON, ";");
+                Consume(TokenType.SEMICOLON, ";");
 
-                Functions.add(identifier, new Expression.Function(identifier, arguments, body));
+                Functions.Add(identifier, new Expression.Function(identifier, arguments, body));
 
-                return Functions.get(identifier);
+                return Functions.Get(identifier);
             }
 
-            Expression expr = expression();
+            Expression expr = ParseExpression();
 
-            consume(TokenType.SEMICOLON, ";");
+            Consume(TokenType.SEMICOLON, ";");
 
-            if (getType() == TokenType.EOF)
+            if (GetType() == TokenType.EOF)
                 return expr;
             else
-                throw new Error(ErrorType.SYNTAX_ERROR, "Invalid syntax", getToken());
+                throw new Error(ErrorType.SYNTAX_ERROR, "Invalid syntax", GetToken());
         }
         catch (Error error)
         {
             if (delete != "")
-                Functions.erase(delete);
+                Functions.Erase(delete);
 
             error.Report();
             return null!;
@@ -123,220 +168,270 @@ public class Parser
         }
     }
 
-    private Expression expression()
+    /// <summary>
+    /// Parse Expression Method for building the AST
+    /// </summary>
+    /// <returns>Root of the AST</returns>
+    private Expression ParseExpression()
     {
-        return logical();
+        return Logical();
     }
 
-    private Expression logical()
+    /// <summary>
+    /// Parse Logical Expression (& |)
+    /// </summary>
+    /// <returns>Logical Expression</returns>
+    private Expression Logical()
     {
-        Expression expr = equality();
+        Expression expr = Equality();
 
-        while (match(TokenType.AMPERSAND, TokenType.VER_BAR))
+        while (Match(TokenType.AMPERSAND, TokenType.VER_BAR))
         {
-            Token token = getToken();
-            advance();
-            Expression right = equality();
+            Token token = GetToken();
+            Advance();
+            Expression right = Equality();
             expr = new Expression.Binary(expr, token, right);
         }
 
         return expr;
     }
 
-    private Expression equality()
+    /// <summary>
+    /// Parse Equality Expression (== !=)
+    /// </summary>
+    /// <returns>Equality Expression</returns>
+    private Expression Equality()
     {
-        Expression expr = comparison();
+        Expression expr = Comparison();
 
-        while (match(TokenType.EQUAL_EQUAL, TokenType.BANG_EQUAL))
+        while (Match(TokenType.EQUAL_EQUAL, TokenType.BANG_EQUAL))
         {
-            Token token = getToken();
-            advance();
-            Expression right = comparison();
+            Token token = GetToken();
+            Advance();
+            Expression right = Comparison();
             expr = new Expression.Binary(expr, token, right);
         }
 
         return expr;
     }
 
-    private Expression comparison()
+    /// <summary>
+    /// Comparison Expression (< <= > >=)
+    /// </summary>
+    /// <returns>Comparison Expression</returns>
+    private Expression Comparison()
     {
-        Expression expr = concatenation();
+        Expression expr = Concatenation();
 
         while (
-            match(TokenType.LESS, TokenType.LESS_EQUAL, TokenType.GREATER, TokenType.GREATER_EQUAL)
+            Match(TokenType.LESS, TokenType.LESS_EQUAL, TokenType.GREATER, TokenType.GREATER_EQUAL)
         )
         {
-            Token token = getToken();
-            advance();
-            Expression right = concatenation();
+            Token token = GetToken();
+            Advance();
+            Expression right = Concatenation();
             expr = new Expression.Binary(expr, token, right);
         }
 
         return expr;
     }
 
-    private Expression concatenation()
+    /// <summary>
+    /// Concatenation Expression (@)
+    /// </summary>
+    /// <returns>Concatenation Expression</returns>
+    private Expression Concatenation()
     {
-        Expression expr = term();
+        Expression expr = Term();
 
-        while (match(TokenType.CONCAT))
+        while (Match(TokenType.CONCAT))
         {
-            Token token = getToken();
-            advance();
-            Expression right = term();
+            Token token = GetToken();
+            Advance();
+            Expression right = Term();
             expr = new Expression.Binary(expr, token, right);
         }
 
         return expr;
     }
 
-    private Expression term()
+    /// <summary>
+    /// Term Expression (+ -)
+    /// </summary>
+    /// <returns>Term Expression</returns>
+    private Expression Term()
     {
-        Expression expr = factor();
+        Expression expr = Factor();
 
-        while (match(TokenType.PLUS, TokenType.MINUS))
+        while (Match(TokenType.PLUS, TokenType.MINUS))
         {
-            Token token = getToken();
-            advance();
-            Expression right = factor();
+            Token token = GetToken();
+            Advance();
+            Expression right = Factor();
             expr = new Expression.Binary(expr, token, right);
         }
 
         return expr;
     }
 
-    private Expression factor()
+    /// <summary>
+    /// Factor Expression (* / %)
+    /// </summary>
+    /// <returns>Factor Expression</returns>
+    private Expression Factor()
     {
-        Expression expr = power();
+        Expression expr = Power();
 
-        while (match(TokenType.STAR, TokenType.SLASH, TokenType.MOD))
+        while (Match(TokenType.STAR, TokenType.SLASH, TokenType.MOD))
         {
-            Token token = getToken();
-            advance();
-            Expression right = power();
+            Token token = GetToken();
+            Advance();
+            Expression right = Power();
             expr = new Expression.Binary(expr, token, right);
         }
 
         return expr;
     }
 
-    private Expression power()
+    /// <summary>
+    /// Power Expression (^)
+    /// </summary>
+    /// <returns>Power Expression</returns>
+    private Expression Power()
     {
-        Expression expr = unary();
+        Expression expr = Unary();
 
-        while (match(TokenType.CARET))
+        while (Match(TokenType.CARET))
         {
-            Token token = getToken();
-            advance();
-            Expression right = unary();
+            Token token = GetToken();
+            Advance();
+            Expression right = Unary();
             expr = new Expression.Binary(expr, token, right);
         }
 
         return expr;
     }
-
-    private Expression unary()
+    
+    /// <summary>
+    /// Unary Expression (- !)
+    /// </summary>
+    /// <returns>Unary Expression</returns>
+    private Expression Unary()
     {
-        if (match(TokenType.MINUS, TokenType.BANG))
+        if (Match(TokenType.MINUS, TokenType.BANG))
         {
-            Token token = getToken();
-            advance();
-            Expression right = unary();
+            Token token = GetToken();
+            Advance();
+            Expression right = Unary();
             return new Expression.Unary(token, right);
         }
 
-        return statement();
+        return Statement();
     }
 
-    private List<Expression.Assign> assing()
+    /// <summary>
+    /// Assign Expression (x1=val1, x2=val2, ...)
+    /// </summary>
+    /// <returns>Assign Expression</returns>
+    /// <exception cref="Error"></exception>
+    private List<Expression.Assign> Assign()
     {
-        List<Expression.Assign> assings = new List<Expression.Assign>();
+        List<Expression.Assign> assigns = new List<Expression.Assign>();
 
-        while (getType() != TokenType.IN)
+        while (GetType() != TokenType.IN)
         {
             string identifier;
-            if (match(TokenType.IDENTIFIER))
+            if (Match(TokenType.IDENTIFIER))
             {
-                identifier = getLexeme();
-                advance();
+                identifier = GetLexeme();
+                Advance();
             }
             else
-                throw new Error(ErrorType.SYNTAX_ERROR, "Expect variable name", getToken());
+                throw new Error(ErrorType.SYNTAX_ERROR, "Expect variable name", GetToken());
 
-            consume(TokenType.EQUAL, "=");
-            Expression expr = expression();
+            Consume(TokenType.EQUAL, "=");
+            Expression expr = ParseExpression();
 
-            if (!match(TokenType.IN))
+            if (!Match(TokenType.IN))
             {
-                consume(TokenType.COMMA, ",");
+                Consume(TokenType.COMMA, ",");
 
-                if (match(TokenType.IN))
-                    throw new Error(ErrorType.SYNTAX_ERROR, "Expect variable name", getToken());
+                if (Match(TokenType.IN))
+                    throw new Error(ErrorType.SYNTAX_ERROR, "Expect variable name", GetToken());
             }
 
-            assings.Add(new Expression.Assign(identifier, expr));
+            assigns.Add(new Expression.Assign(identifier, expr));
         }
 
-        return assings;
+        return assigns;
     }
 
-    private Expression statement()
+    /// <summary>
+    /// Statement Expression (if else let)
+    /// </summary>
+    /// <returns>Statement Expression</returns>
+    private Expression Statement()
     {
-        if (match(TokenType.IF))
+        if (Match(TokenType.IF))
         {
-            advance();
-            Expression condition = primary();
-            Expression ifBody = expression();
-            consume(TokenType.ELSE, "else");
-            Expression elseBody = expression();
+            Advance();
+            Expression condition = Primary();
+            Expression ifBody = ParseExpression();
+            Consume(TokenType.ELSE, "else");
+            Expression elseBody = ParseExpression();
             return new Expression.IfStatement(condition, ifBody, elseBody);
         }
 
-        if (match(TokenType.LET))
+        if (Match(TokenType.LET))
         {
-            advance();
-            List<Expression.Assign> assingBody = assing();
-            consume(TokenType.IN, "in");
-            Expression body = expression();
+            Advance();
+            List<Expression.Assign> assingBody = Assign();
+            Consume(TokenType.IN, "in");
+            Expression body = ParseExpression();
             return new Expression.LetStatement(assingBody, body);
         }
 
-        if (match(TokenType.IDENTIFIER))
+        if (Match(TokenType.IDENTIFIER))
         {
-            if (Functions.contains(getLexeme()))
+            if (Functions.Contains(GetLexeme()))
             {
-                string identifier = getLexeme();
-                advance();
-                consume(TokenType.LEFT_PAREN, "(");
+                string identifier = GetLexeme();
+                Advance();
+                Consume(TokenType.LEFT_PAREN, "(");
 
                 List<Expression> arguments = new List<Expression>();
-                while (getType() != TokenType.RIGHT_PAREN)
+                while (GetType() != TokenType.RIGHT_PAREN)
                 {
-                    Expression argument = expression();
+                    Expression argument = ParseExpression();
 
                     arguments.Add(argument);
 
-                    if (getType() != TokenType.RIGHT_PAREN)
-                        consume(TokenType.COMMA, ")");
+                    if (GetType() != TokenType.RIGHT_PAREN)
+                        Consume(TokenType.COMMA, ")");
                 }
 
-                consume(TokenType.RIGHT_PAREN, ")");
+                Consume(TokenType.RIGHT_PAREN, ")");
 
-                return new Expression.Call(identifier, arguments, Functions.get(identifier));
+                return new Expression.Call(identifier, arguments, Functions.Get(identifier));
             }
 
-            Expression.Variable expr = new Expression.Variable(getLexeme());
-            advance();
+            Expression.Variable expr = new Expression.Variable(GetLexeme());
+            Advance();
             return expr;
         }
 
-        return primary();
+        return Primary();
     }
 
-    private Expression primary()
+    /// <summary>
+    /// Primary Expression
+    /// </summary>
+    /// <returns>Primary Expression</returns>
+    /// <exception cref="Error"></exception>
+    private Expression Primary()
     {
         if (
-            match(
+            Match(
                 TokenType.NUMBER,
                 TokenType.STRING,
                 TokenType.FALSE,
@@ -345,16 +440,16 @@ public class Parser
                 TokenType.EULER
             )
         )
-            return new Expression.Literal(tokens[advance()].literal);
+            return new Expression.Literal(tokens[Advance()].literal);
 
-        if (match(TokenType.LEFT_PAREN))
+        if (Match(TokenType.LEFT_PAREN))
         {
-            advance();
-            Expression expr = expression();
-            consume(TokenType.RIGHT_PAREN, ")");
+            Advance();
+            Expression expr = ParseExpression();
+            Consume(TokenType.RIGHT_PAREN, ")");
             return expr;
         }
 
-        throw new Error(ErrorType.SYNTAX_ERROR, "Invalid syntax", getToken());
+        throw new Error(ErrorType.SYNTAX_ERROR, "Invalid syntax", GetToken());
     }
 }

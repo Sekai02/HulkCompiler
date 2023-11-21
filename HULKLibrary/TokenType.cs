@@ -1,5 +1,8 @@
 namespace HULKLibrary;
 
+/// <summary>
+/// Different Types of Tokens
+/// </summary>
 public enum TokenType
 {
     //Tokens with one character
